@@ -1,49 +1,83 @@
+//API KEY for tisseo.fr
 const API_KEY = "76b5d53a-2130-4e1b-af48-46203bd7650a";
 
-/**
- * Creates a configuration object for an autoComplete.js instance.
- * This avoids code duplication for the start and end inputs.
- * @param {string} selector - The CSS selector for the input field.
- * @param {string} placeHolder - The placeholder text for the input.
- * @returns {object} The configuration object for autoComplete.js.
- */
-const createAutoCompleteConfig = (selector, placeHolder) => ({
-    selector,
-    placeHolder,
+//Fun to query places
+const placeQuery = async function (searchPlace) {
+  try {
+    const url = `https://corsproxy.io/?https://api.tisseo.fr/v2/places.json?term=${searchPlace}&key=${API_KEY}`;
+    const reponse = await fetch(url);
+    const data = await reponse.json();
+    return data.placesList.place
+            .filter(element => element.category === "Arrêts")
+            .map(element => element.label);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//Create new instance of autoComplete.js
+const autoCompleteConfig = {
+    selector: ".autocomplete-input",
     data: {
-        src: async (query) => {
-            try {
-                const url = `https://corsproxy.io/?https://api.tisseo.fr/v2/places.json?term=${query}&key=${API_KEY}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                if (data.placesList && data.placesList.place) {
-                    // Ensure 'place' is always an array.
-                    const places = Array.isArray(data.placesList.place)
-                        ? data.placesList.place
-                        : [data.placesList.place];
-                    // BEST PRACTICE: Return the array of objects directly.
-                    return places;
-                }
-                return [];
-            } catch (error) {
-                console.error("API Fetch Error:", error);
-                return [];
+        src: placeQuery,
+        cache: false,
+    },
+    resultsList: {
+        element: (list, data) => {
+            if (!data.results.length) {
+                const message = document.createElement("div");
+                message.setAttribute("class", "no_result");
+                message.innerHTML = `<span class="text-danger">Aucun résultat pour "${data.query}"</span>`;
+                list.prepend(message);
             }
         },
-        // Tell the library which key in our objects contains the visible text
-        keys: ["label"],
-        cache: true,
-    },
-    debounce: 300,
-    trigger: {
-        event: ["input"],
-        condition: (query) => query.length > 2,
+        noResults: true,
     },
     resultItem: {
         highlight: true,
     },
+    threshold: 3,
+     events: {
+        input: {
+            selection: (event) => {
+                const selection = event.detail.selection.value;
+                event.target.value = selection;
+            }
+        }
+    }
+};
+
+
+new autoComplete({
+    ...autoCompleteConfig,
+    selector: "#input-start",
 });
 
-// --- Initialize both autocomplete inputs using the factory function ---
-const autoCompleteStart = new autoComplete(createAutoCompleteConfig("#input-start", "Saisir votre point de départ..."));
-const autoCompleteEnd = new autoComplete(createAutoCompleteConfig("#Input-end", "Saisir votre point d'arrivée..."));
+new autoComplete({
+    ...autoCompleteConfig,
+    selector: "#input-end",
+});
+
+async function list() {
+    try{ const url = `https://api.tisseo.fr/v2/journeys.json?departurePlace=basso%20cambo&arrivalPlace=fran%C3%A7ois%20verdier%20toulouse&key=${API_KEY}`;
+    const reponse = await fetch(url);
+    const data = await reponse.json();
+    console.log(data.routePlannerResult.journeys[0]);
+    } catch(error){
+        console.log(error);
+    }
+}   
+list();
+/*async function list() {
+    try{ const url = `https://corsproxy.io/?https://api.tisseo.fr/v2/places.json?term=capitol&key=${API_KEY}`;
+    const reponse = await fetch(url);
+    const data = await reponse.json();
+        console.log(data);
+  
+    } catch(error){
+        console.log(error);
+    }
+}   
+list();*/
+
+
