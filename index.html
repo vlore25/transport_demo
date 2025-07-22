@@ -19,24 +19,18 @@
         </div>
         <div>
             <div class="m-4 row col-5">
-                <form>
+                <form id="search-form">
+                    <div class="m-4">
                     <label for="input-start">Depart:</label>
-                    <input type="text" id="input-start" class="autocomplete-input" placeholder="Saisir un point de départ" autocomplete="off">
+                    <input type="text" id="start-place" class="autocomplete-input" placeholder="Saisir un point de départ" autocomplete="off">
                     <label for="input-end">Arrivé</label>
-                    <input type="text" id="input-end" class="autocomplete-input" placeholder="Saisir un point de arrivé" autocomplete="off">
+                    <input type="text" id="arrival-place" class="autocomplete-input" placeholder="Saisir un point de arrivé" autocomplete="off">
+                    </div>
+                    <button type="button" class="btn btn-danger mx-4" id="search-btn">Rechercher</button>
                 </form>
             </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Mode de transport</th>
-                        <th>Numero de ligne</th>
-                        <th>arrets deservies</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <section id="table-section">
+            </section>
         </div>    
     </section>
     </main>
