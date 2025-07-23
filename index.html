@@ -1,45 +1,92 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Transport Toulouse</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <!--BootStrap icons-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <!--Autocomplete Style-->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.9/dist/css/autoComplete.01.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.9/dist/css/autoComplete.01.min.css">
     <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
+</head>
+
+<body>
     <main>
-    <section class="container mt-4 bg-light border rounded">
-        <div>
-            <h2>Calculez votre intinéraire</h2>
-        </div>
-        <div>
-            <div class="m-4 row col-5">
-                <form id="search-form">
-                    <div class="m-4">
-                    <label for="input-start">Depart:</label>
-                    <input type="text" id="start-place" class="autocomplete-input" placeholder="Saisir un point de départ" autocomplete="off">
-                    <label for="input-end">Arrivé</label>
-                    <input type="text" id="arrival-place" class="autocomplete-input" placeholder="Saisir un point de arrivé" autocomplete="off">
-                    </div>
-                    <button type="button" class="btn btn-danger mx-4" id="search-btn">Rechercher</button>
-                </form>
+        <section class="container mt-4 bg-light border rounded">
+            <div>
+                <h2></h2>
             </div>
-            <section id="table-section">
-            </section>
-        </div>    
-    </section>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane"
+                        type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Calculez votre
+                        intinéraire</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane"
+                        type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Prochains
+                        passages</button>
+                </li>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab"
+                        tabindex="0">
+                        <div>
+                            <div class="m-4 row col-5">
+                                <form id="search-form">
+                                    <div class="m-4">
+                                        <label for="start-place">Depart:</label>
+                                        <div class="input-group mb3">
+                                            <input type="text" id="start-place" class="autocomplete-input"
+                                                placeholder="Saisir un point de départ" autocomplete="off" required>
+                                        </div>
+                                        <label for="arrival-place">Arrivé</label>
+                                        <input type="text" id="arrival-place" class="autocomplete-input"
+                                            placeholder="Saisir un point de arrivé" autocomplete="off" required>
+                                    </div>
+                                    <button type="button" class="btn btn-danger mx-4"
+                                        id="search-btn">Rechercher</button>
+                                </form>
+                            </div>
+                            <section id="table-section">
+                            </section>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab"
+                        tabindex="0">
+                        <div class="m-4 row col-5">
+                            <form id="search-form">
+                                <div class="m-4">
+                                    <label for="stop-input">Arrêt:</label>
+                                    <div class="input-group mb3">
+                                        <input type="text" id="stop-input" class="autocomplete-input"
+                                            placeholder="Saisir une arrêt" autocomplete="off">
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-danger mx-4" id="search-stop">Rechercher</button>
+                            </form>
+                        </div>
+                        <section id="table-section-stop">
+                        </section>
+                    </div>
+                </div>
+                </div>
+
+        </section>
     </main>
 
     <!--Autocomplete libray-->
     <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.9/dist/autoComplete.min.js"></script>
     <!--BootStrap-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
     <!--Script JS-->
     <script src="script.js"></script>
 </body>
+
 </html>
