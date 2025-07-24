@@ -253,18 +253,13 @@ new autoComplete({
 
 
 //Fun to get stop area departures info
-const stopQuery = async function () {
-    const stopInput = document.getElementById("stop-input");
-    const stopAreaId = stopInput.dataset.stopAreaId;
-
+const stopQuery = async function (stopAreaId) {
+    const stopAreaIdData = stopInput.dataset.stopAreaId;
     try {
-        const url = `https://corsproxy.io/?https://api.tisseo.fr/v2/stops_schedules.json?stopAreaId=${stopAreaId}&key=${API_KEY}`;
+        const url = `https://corsproxy.io/?https://api.tisseo.fr/v2/stops_schedules.json?stopAreaId=${stopAreaIdData}&key=${API_KEY}`;
         const reponse = await fetch(url);
         const data = await reponse.json();
         
-
-
-
         //Get departure lines
         const getDepartureLines = data.departures.departure.map(departure => ({
                 lineId: departure.line.id,
@@ -281,18 +276,21 @@ const stopQuery = async function () {
                 return destination.name;
             });
         })
-       console.log("stopQuery reponse:", data);
-       console.log(data);
-       console.log(getDepartureLines);
-       console.log(getDepartureTimes);
-       console.log(getDepartureTerminus);
-    
+        return {
+            departLine: getDepartureLines,
+            departTime: getDepartureTimes,
+            departTerminus: getDepartureTerminus
+        }
     } catch (error) {
         console.log(error);
     }
 };
 let line = "line:61";
-const tranportModeQuery = async function (lineId){
+
+
+//get the transpot metod of a line for icon reprentation
+const tranportModeQuery = async function (stopqueryData){
+    const lineId = stopqueryData.departLine;
     try {
         const url = `https://corsproxy.io/?https://api.tisseo.fr/v2//lines.json?lineId=${lineId}&key=${API_KEY}`;
         const reponse = await fetch(url);
@@ -305,11 +303,12 @@ const tranportModeQuery = async function (lineId){
     }
 }
 
-async function departuresQuery(){
+const launchstopQuery = async function(){
+    const stopInput = document.getElementById("stop-input");
+    const stopQueryData = await stopQuery(stopInput);
+    const getTransportMethod = await tranportModeQuery(stopQueryData)
+    console.log(getTransportMethod);
 
-const transportName = await tranportModeQuery(line);
-tranportModeQuery
-stopQuery 
 }
 
-document.getElementById("search-stop").addEventListener("click", stopQuery);
+document.getElementById("search-stop").addEventListener("click", launchstopQuery);
