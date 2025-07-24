@@ -1,5 +1,15 @@
-//API KEY for tisseo.fr
+//API KEY for tisseo 
 const API_KEY = "76b5d53a-2130-4e1b-af48-46203bd7650a";
+
+//Icons constants
+const icons = {
+    bus: `<img src="https://www.tisseo.fr/themes/tisseo_theme/images/picto/network/icone_bus.png">`,
+    métro: `<img src="https://www.tisseo.fr/themes/tisseo_theme/images/picto/network/icone_metro.png">`,
+    telepherique: `<img src="https://www.tisseo.fr/themes/tisseo_theme/images/picto/network/icone_telepherique.png">`,
+    lineo: `<img src="https://www.tisseo.fr/themes/tisseo_theme/images/picto/network/icone_bus.png">`,
+    navette: `<img src="https://www.tisseo.fr/themes/tisseo_theme/images/picto/cartouches/NVBOY.png">`,
+    teleo: `<img src="https://www.tisseo.fr/themes/tisseo_theme/images/picto/cartouches/teleo.png">`
+};
 
 //Fun to query places
 const placeQuery = async function (searchPlace) {
@@ -66,11 +76,9 @@ const journeysFetch = async function (departurePlace, arrivalPlace) {
         const url = `https://api.tisseo.fr/v2/journeys.json?departurePlace=${departurePlace}&arrivalPlace=${arrivalPlace}&key=${API_KEY}`;
         const reponse = await fetch(url);
         const data = await reponse.json();
-        console.log(data);
-
         return data;
     } catch (error) {
-        console.error("A critical error occurred:", error);
+        console.error(error);
     }
 }
 //Process the json and each journey info
@@ -97,16 +105,16 @@ const getJourneysInfo = (data) => {
 
         // Extract arrival time
         const arrivalTime = journey.arrivalDateTime
-;
+            ;
         // Extract each stop
         const stops = journey.chunks
             .filter(chunk => chunk.stop?.name)
             .map(chunk => chunk.stop.name);
-        
+
         //Return array with journey info indexed
         return {
-            legs: legs, 
-            transportMethods: [...new Set(transportMethods)], 
+            legs: legs,
+            transportMethods: [...new Set(transportMethods)],
             stops: stops,
             departureTime: departureTime,
             arrivalTime: arrivalTime
@@ -114,30 +122,19 @@ const getJourneysInfo = (data) => {
     });
 };
 
+
+
 const displayRoutes = function (journeysInfo) {
-    // 1. Get the container element where the table will be placed.
+    //Get the container element where the table will be placed
     const tableContainer = document.getElementById("table-section");
-    if (!tableContainer) {
-        console.error('Error: The container with id="table-section" was not found.');
-        return;
-    }
 
-    const icons = {
-        bus: `<img src="https://www.tisseo.fr/themes/tisseo_theme/images/picto/network/icone_bus.png">`,
-        métro: `<img src="https://www.tisseo.fr/themes/tisseo_theme/images/picto/network/icone_metro.png">`,
-        telepherique: `<img src="https://www.tisseo.fr/themes/tisseo_theme/images/picto/network/icone_telepherique.png">`,
-        lineo: `<img src="https://www.tisseo.fr/themes/tisseo_theme/images/picto/network/icone_lineo.png">`,
-        navette: `<img src="https://www.tisseo.fr/themes/tisseo_theme/images/picto/cartouches/NVBOY.png">`,
-        teleo: `<img src="https://www.tisseo.fr/themes/tisseo_theme/images/picto/cartouches/teleo.png">`
-    };
-
-    // 2. Build the HTML for the table rows (tbody content).
+    //Build the HTML for the table rows (tbody content).
     let rowsHtml = '';
     journeysInfo.forEach((journey, index) => {
-        const tMethodsHtml = journey.transportMethods.map(method => icons[method.toLowerCase()] || '?').join(' ');
-        const linesWColorsHTML = journey.legs.map(leg => 
-            `<span class="line-badge" style="padding: 4px; color: white; font-weight: bold; background-color: ${leg.color};">${leg.shortName}</span>`
-        ).join('<span class="line-separator"> → </span>');
+        const tMethodsHtml = journey.transportMethods.map(method => icons[method.toLowerCase()] || '?').join(``);
+        const linesWColorsHTML = journey.legs.map(leg =>
+            `<span class="line-badge" style="padding: 2px 6px; color: white; font-weight: bold; border-radius: 4px; background-color: ${leg.color};">${leg.shortName}</span>`
+        ).join('<span class="line-separator"> <i class="bi bi-chevron-right"></i> </span>');
         const stopHTML = journey.stops.map(item => `<li>${item}</li>`).join('');
         const depart = journey.departureTime;
         const arrival = journey.arrivalTime;
@@ -161,8 +158,7 @@ const displayRoutes = function (journeysInfo) {
             </tr>`;
     });
 
-    // 3. Create the full table HTML, including the header.
-    const fullTableHtml = `
+    const TableHtml = `
         <table class="table table-hover mt-4">
             <thead>
                 <tr>
@@ -170,8 +166,6 @@ const displayRoutes = function (journeysInfo) {
                     <th>Lignes</th>
                     <th>Départ</th>
                     <th>Arrivée</th>
-                    <th>Durée</th>
-                    <th>Détails</th>
                 </tr>
             </thead>
             <tbody>
@@ -181,7 +175,7 @@ const displayRoutes = function (journeysInfo) {
     `;
 
     // 4. Insert the complete table into the container.
-    tableContainer.innerHTML = fullTableHtml;
+    tableContainer.innerHTML = TableHtml;
 };
 
 
@@ -205,8 +199,8 @@ const searchRoute = async function () {
 searchBtn.addEventListener("click", searchRoute);
 
 //------------------Station info query----------------------///
-// Fun to query places and return both label and id
 
+// Fun to query places and return both label and id
 const stopAreaQuery = async function (searchPlace) {
     try {
         const url = `https://corsproxy.io/?https://api.tisseo.fr/v2/places.json?term=${searchPlace}&displayOnlyStopAreas=1&key=${API_KEY}`;
@@ -218,7 +212,7 @@ const stopAreaQuery = async function (searchPlace) {
         }));
     } catch (error) {
         console.log(error);
-        return []; 
+        return [];
     }
 };
 
@@ -227,7 +221,7 @@ new autoComplete({
     selector: "#stop-input",
     data: {
         src: stopAreaQuery,
-        keys: ["label"], 
+        keys: ["label"],
         cache: false,
     },
     resultItem: {
@@ -254,17 +248,18 @@ new autoComplete({
 
 //Fun to get stop area departures info
 const stopQuery = async function (stopAreaId) {
-    const stopAreaIdData = stopInput.dataset.stopAreaId;
+    //Get the data set with the stop area data from the stop-input field
+    const stopAreadata = stopAreaId.dataset.stopAreaId;
     try {
-        const url = `https://corsproxy.io/?https://api.tisseo.fr/v2/stops_schedules.json?stopAreaId=${stopAreaIdData}&key=${API_KEY}`;
+        const url = `https://corsproxy.io/?https://api.tisseo.fr/v2/stops_schedules.json?stopAreaId=${stopAreadata}&key=${API_KEY}`;
         const reponse = await fetch(url);
         const data = await reponse.json();
-        
+
         //Get departure lines
         const getDepartureLines = data.departures.departure.map(departure => ({
-                lineId: departure.line.id,
-                lineShortName: departure.line.shortName,
-                lineColor: departure.line.bgXmlColor || '#000000ff'
+            lineId: departure.line.id,
+            lineShortName: departure.line.shortName,
+            lineColor: departure.line.bgXmlColor || '#000000ff'
         }));
         //Get departure times
         const getDepartureTimes = data.departures.departure.map(departure => {
@@ -276,6 +271,7 @@ const stopQuery = async function (stopAreaId) {
                 return destination.name;
             });
         })
+        //Reagrouping departure time, lines and terminus for the stop area
         return {
             departLine: getDepartureLines,
             departTime: getDepartureTimes,
@@ -285,30 +281,100 @@ const stopQuery = async function (stopAreaId) {
         console.log(error);
     }
 };
-let line = "line:61";
 
 
-//get the transpot metod of a line for icon reprentation
-const tranportModeQuery = async function (stopqueryData){
-    const lineId = stopqueryData.departLine;
+
+//get the transpot metod by line for icon reprentation
+const tranportModeQuery = async function (stopqueryData) {
+    const allDepartures = stopqueryData.departLine;
+    //Debuggin :)
+    //Get unique id by line to avoid to ask the server for duplicate information
+    const uniqueLineIds = new Set(allDepartures.map(line => line.lineId));
+
     try {
-        const url = `https://corsproxy.io/?https://api.tisseo.fr/v2//lines.json?lineId=${lineId}&key=${API_KEY}`;
-        const reponse = await fetch(url);
-        const data = await reponse.json();
-        return data.lines.line.map(line => {
-            return line.transportMode.name;
-        })
-    } catch (error) {
-        console.log(error);
-    }
-}
+        const linePromises = Array.from(uniqueLineIds).map(id => {
+            const url = `https://corsproxy.io/?https://api.tisseo.fr/v2/lines.json?lineId=${id}&key=${API_KEY}`;
+            return fetch(url).then(response => response.json());
+        });
+        const allLineDetails = await Promise.all(linePromises);
+        const transportModeMap = new Map();
+        allLineDetails.forEach(detail => {
+            const line = detail.lines.line[0];
+            transportModeMap.set(line.id, line.transportMode.name);
+        });
 
-const launchstopQuery = async function(){
+        const orderedTransportModes = allDepartures.map(departure => {
+            return transportModeMap.get(departure.lineId);
+        });
+
+        return orderedTransportModes;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
+const launchstopQuery = async function () {
+    let rowsHtml = '';
+    const tableContainer = document.getElementById("table-section-stop");
     const stopInput = document.getElementById("stop-input");
     const stopQueryData = await stopQuery(stopInput);
     const getTransportMethod = await tranportModeQuery(stopQueryData)
-    console.log(getTransportMethod);
+    const tMethodsHtml = getTransportMethod.map(method => icons[method.toLowerCase()] || '?');
 
+    //Get each column info 
+    //Get Departure Time
+    const departLinesTime = stopQueryData.departTime;
+    //Get lines Names 
+    const departLinesName = stopQueryData.departLine.map(departLine => {
+        return {
+            name: departLine.lineShortName,
+            color: departLine.lineColor
+        }
+    })
+    //Get lines terminus
+    const departLinesTerminus = stopQueryData.departTerminus.map(departTerminus => {
+        return departTerminus[0];
+    });
+    departLinesTime.forEach((time, index) => {
+        //Get the current line
+        const lineInfo = departLinesName[index];
+        //get the name and color
+        const name = lineInfo.name;
+        const color = lineInfo.color;
+
+        //Get terminus and transport method
+        const terminus = departLinesTerminus[index];
+        const transport = tMethodsHtml[index];
+
+        //Take name and color to create lines badge
+        const lineBadge = `<span style="background-color: ${color}; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold;">${name}</span>`;
+
+        rowsHtml += `<tr>
+                    <td>${time}</td>
+                    <td>${lineBadge}</td>
+                    <td>${terminus}</td>
+                    <td>${transport}</td>
+                </tr>`;
+    });
+
+    const TableHtml = `
+        <table class="table table-hover mt-4">
+            <thead>
+                <tr>
+                    <th>Heure de depart</th>
+                    <th>Ligne</th>
+                    <th>Terminus</th>
+                    <th>Mode de transport</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${rowsHtml}
+            </tbody>
+        </table>
+    `;
+    tableContainer.innerHTML = TableHtml;
 }
 
-document.getElementById("search-stop").addEventListener("click", launchstopQuery);
+document.getElementById("search-stop-btn").addEventListener("click", launchstopQuery);
+
