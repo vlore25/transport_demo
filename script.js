@@ -1,5 +1,5 @@
 //API KEY for tisseo 
-const API_KEY = "76b5d53a-2130-4e1b-af48-46203bd7650a";
+const API_KEY = "";
 
 //Icons constants
 const icons = {
